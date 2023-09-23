@@ -1,4 +1,4 @@
-name: Start Factorio Server
+name: Save game
 
 on:
   workflow_dispatch:
