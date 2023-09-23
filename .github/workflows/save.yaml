@@ -1,0 +1,37 @@
+name: Start Factorio Server
+
+on:
+  workflow_dispatch:
+    user:
+      - benchungiscool
+      - dlaming
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start docker service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ~/projects/factorio-server
+            ./delsave.sh
+            cp ~/factorio/saves/origin.zip ~/projects/factorio-server/saves/
+      - name: Push save
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ~/projects/factorio-server/saves
+            git add origin.zip
+            git commit -m "AUTOMATED: Push save to repo"
+            git push origin main
+            rm origin.zip
