@@ -1,0 +1,25 @@
+name: Start Factorio Server
+
+on:
+  workflow_dispatch:
+    user:
+      - benchungiscool
+      - dlaming
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start systemd service
+        uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+        run: |
+          cd ~/factorio
+          docker-compose down
+          docker-compose up -d
+          

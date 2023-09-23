@@ -1,0 +1,53 @@
+name: Stop Factorio Server
+
+on:
+  workflow_dispatch:
+    user:
+      - benchungiscool
+      - dlaming
+
+jobs:
+  stop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Stop systemd service
+        uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+        run: |
+          cd ~/factorio
+          docker-compose down
+          docker-compose up -d
+
+  export_save:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Copy file to repo
+        uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+        run: |
+          cd ~/factorio/saves
+          cp origin.zip ~/projects/factorio-server/saves
+
+      - name: Push save to remote
+        uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+        run: |
+          cd ~/projects/factorio-server/saves
+          git add origin.zip
+          git commit -m "AUTOMATED: Push save to repo"
+
+          
