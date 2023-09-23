@@ -36,7 +36,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ~/factorio/saves
-            cp origin.zip ~/projects/factorio-server/saves
+            cp origin.zip ~/projects/factorio-server/saves/
 
       - name: Push save to remote
         uses: appleboy/ssh-action@master
@@ -49,5 +49,7 @@ jobs:
             cd ~/projects/factorio-server/saves
             git add origin.zip
             git commit -m "AUTOMATED: Push save to repo"
+            git push origin main
+            rm origin.zip
 
           
