@@ -1,3 +1,3 @@
 if [ -e "saves/origin.zip" ]; then
-    rm "path/to/your/file"
+    rm "saves/origin.zip"
 fi
